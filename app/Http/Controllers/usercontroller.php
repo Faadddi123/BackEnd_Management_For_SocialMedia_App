@@ -34,6 +34,7 @@ class usercontroller extends Controller
 
         if ($user) {
             return response()->json([
+                'id' => $user->id,
                 'user_name' => $user->name,
                 'email' => $user->email,
                 'phone_number' => $user->phone_number,
@@ -41,6 +42,23 @@ class usercontroller extends Controller
             ]);
         } else {
             return response()->json(['error' => 'User not found'], 404);
+        }
+    }
+
+    public function getAuthenticatedUserName()
+    {
+        $user = Auth::user(); // Get the authenticated user
+
+        if ($user) {
+            return response()->json([
+                'id' => $user->id,
+                'user_name' => $user->name,
+                'email' => $user->email,
+                'phone_number' => $user->phone_number,
+                'age' => $user->age
+            ]);
+        } else {
+            return response()->json(['error' => 'User not authenticated'], 401);
         }
     }
 }

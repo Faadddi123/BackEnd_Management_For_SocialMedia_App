@@ -101,4 +101,29 @@ class PostManagement extends Controller
 
         return response()->json(['post' => $post], 200);
     }
+
+    public function getpostinfo($id)
+    {
+        // Find the post by ID
+        $post = Post::find($id);
+
+        // Check if the post exists
+        if (!$post) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+
+        // Return the post information along with user details
+        return response()->json([
+            'post' => [
+                'id' => $post->id,
+                'content_text' => $post->content_text,
+                'element_type' => $post->element_type,
+                'element_path' => $post->element_path,
+                'updated_at' => $post->updated_at,
+                'user_name' => $post->user->name, // Assuming there's a username field in the user model
+                'email' => $post->user->email // Assuming there's an email field in the user model
+
+            ]
+        ], 200);
+    }
 }

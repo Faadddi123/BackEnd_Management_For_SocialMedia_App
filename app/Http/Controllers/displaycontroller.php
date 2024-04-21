@@ -11,9 +11,18 @@ class displaycontroller extends Controller
     public function displayPosts()
     {
         $posts = Post::join('displayed', 'posts.id', '=', 'displayed.post_id')
-             ->join('users', 'users.id', '=', 'displayed.user_id')
-             ->select('posts.*', 'users.name as user_name','users.email as email', 'displayed.partage_id')
-             ->latest('posts.created_at')
+             ->join('users as sharer', 'sharer.id', '=', 'displayed.user_id')
+             ->join('users as original_poster', 'original_poster.id', '=', 'posts.user_id')
+             ->join('post_partaged', 'post_partaged.id', '=', 'displayed.partage_id')
+             ->select(
+                 'posts.*',
+                 'sharer.name as user_name', 'sharer.email as email',
+                 'original_poster.name as original_user_name', 'original_poster.email as original_user_email',
+                 'displayed.partage_id','displayed.id as displayed_id',
+                 'post_partaged.text',
+                 'post_partaged.updated_at as partaged_updated_at'
+             )
+             ->latest('displayed.created_at')
              ->take(10)
              ->get();
 

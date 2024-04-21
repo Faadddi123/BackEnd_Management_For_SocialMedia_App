@@ -1,12 +1,16 @@
 <?php
 
+use App\Http\Controllers\authentification;
+use App\Http\Controllers\commentmanagement;
 use App\Http\Controllers\displaycontroller;
+use App\Http\Controllers\messagecontroller;
 use App\Http\Controllers\postmanagement;
+use App\Http\Controllers\sharecontroller;
 use App\Http\Controllers\usercontroller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\authentification;
-use App\Http\Controllers\messagecontroller;
+
+
 // Registration
 Route::post('/register', [authentification::class, 'register']);
 
@@ -51,6 +55,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/posts/{id}', [PostManagement::class, 'show']);
     Route::put('/posts/{id}', [PostManagement::class, 'update']);
     Route::delete('/posts/{id}', [PostManagement::class, 'delete']);
+    Route::get('/getusernameoftheauth' , [usercontroller::class, 'getAuthenticatedUserName']);
+    Route::post('/importashare' , [sharecontroller::class , 'storeasharepost']);
+    Route::get('/getthepostinfo/{id}' , [PostManagement::class, 'getpostinfo']);
+    Route::post('/putacomment', [commentmanagement::class, 'create']);
+    Route::put('/comments/{id}', [commentmanagement::class, 'update']);
+    Route::delete('/comments/{id}', [commentmanagement::class, 'delete']);
 });
 
 // Assuming you might also want a logout route
