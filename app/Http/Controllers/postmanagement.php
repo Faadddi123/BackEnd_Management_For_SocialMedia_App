@@ -16,15 +16,39 @@ class PostManagement extends Controller
             'content_text' => 'nullable|string',
             'element_type' => 'nullable|string',
             'element_path' => 'nullable|string',
-            'user_id' => 'prohibited', // Ensuring user_id is not provided in the request
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:10240' // Validation for media files
         ]);
+        // return response()->json([
+        //     'message' => 'Post and display record created successfully',
+        //     'post' => $request
+        // ], 201);
+        if($request->file('media')){
+        $file = $request->file('media');
+        $fileExtension = $file->getClientOriginalExtension();
+        $fileName = $file->hashName();
+
+
+
+        if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])) {
+            $path = $file->storeAs('images', $fileName, 'public');
+            $elementType = 1; // Type 1 for images
+        } elseif ($fileExtension === 'mp4') {
+            $path = $file->storeAs('videos', $fileName, 'public');
+            $elementType = 2; // Type 2 for videos
+        } else {
+            return response()->json(['error' => 'Unsupported file type'], 415);
+        }
+        }else{
+            $fileName = 'nothing';
+            $elementType = 'nothing';
+        }
 
         // Default values for missing fields
         $data = [
-            'content_text' => $request->input('content_text', 'nothing'),
-            'element_type' => $request->input('element_type', 'nothing'),
-            'element_path' => $request->input('element_path', 'nothing'),
-            'user_id' => Auth::id(), // Get the authenticated user's ID
+        'content_text' => $request->input('content_text', 'nothing'),
+        'element_type' => $elementType,
+        'element_path' => $fileName,
+        'user_id' => Auth::id(),
         ];
 
         // Check if all fields are 'nothing', which is not allowed

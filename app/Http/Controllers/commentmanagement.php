@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class commentmanagement extends Controller
 {
@@ -12,11 +13,11 @@ class commentmanagement extends Controller
     {
         $validatedData = $request->validate([
             'text' => 'required|string',
-            'user_id' => 'required|integer',
             'displayed_id' => 'required|integer'
         ]);
 
         $comment = new Comment($validatedData);
+        $comment->user_id = Auth::id();; 
         $comment->save();
 
         return response()->json(['message' => 'Comment created successfully', 'data' => $comment], 201);
@@ -50,5 +51,21 @@ class commentmanagement extends Controller
         $comment->delete();
 
         return response()->json(['message' => 'Comment deleted successfully'] , 201);
+    }
+
+
+    public function getCommentsByDisplayedId($displayed_id)
+    {
+        $comments = Comment::with('user') // 'user' should be the name of the relationship method defined in the Comment model
+                        ->where('displayed_id', $displayed_id)
+                        ->orderBy('created_at', 'desc')
+                        ->take(10)
+                        ->get();
+
+        if ($comments->isEmpty()) {
+            return response()->json(['message' => 'No comments found for the provided displayed_id'], 404);
+        }
+
+        return response()->json(['message' => 'Comments retrieved successfully', 'data' => $comments]);
     }
 }

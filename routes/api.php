@@ -3,12 +3,14 @@
 use App\Http\Controllers\authentification;
 use App\Http\Controllers\commentmanagement;
 use App\Http\Controllers\displaycontroller;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\messagecontroller;
 use App\Http\Controllers\postmanagement;
 use App\Http\Controllers\sharecontroller;
 use App\Http\Controllers\usercontroller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 
 // Registration
@@ -38,10 +40,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Send a message
     Route::post('/sendmessage', [messagecontroller::class, 'sendMessage']);
 
-    // Load messages
+ 
     Route::post('/loadingmessages', [messagecontroller::class, 'loadMessages']);
 
-    // Token validation (assuming you want to check if token is valid)
+
     Route::get('/tokenvalidate', function () {
         return response()->json(['message' => 'Token is valid'], 200);
     });
@@ -61,6 +63,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/putacomment', [commentmanagement::class, 'create']);
     Route::put('/comments/{id}', [commentmanagement::class, 'update']);
     Route::delete('/comments/{id}', [commentmanagement::class, 'delete']);
+    Route::get('/comments/displayed/{displayed_id}', [commentmanagement::class,'getCommentsByDisplayedId']);
+    Route::post('/media/upload', [MediaController::class, 'upload']);
+    Route::get('/media/stream/{mediaId}', [MediaController::class, 'stream']);
+    Route::get('/media/check/{mediaId}', [MediaController::class, 'checkFileExists']);
+    Route::get('/media/checkback/{mediaId}', [MediaController::class, 'getbackimages']);
+    Route::get('/media/videoback/{mediaId}', [MediaController::class, 'getbackvideos']);
 });
 
 // Assuming you might also want a logout route

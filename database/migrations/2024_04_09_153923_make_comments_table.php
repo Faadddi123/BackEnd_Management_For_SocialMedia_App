@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id(); // Automatically creates an auto-incrementing ID column
-            $table->text('text'); // For the comment text
-            $table->timestamp('created_at')->useCurrent(); // For the date of creation
+            $table->text('text'); // For the comment text // For the date of creation
             $table->unsignedBigInteger('user_id'); // Assuming user_id is a foreign key to a users table
             $table->unsignedBigInteger('displayed_id'); // For the displayed_id, assuming it's an integer
-
+            $table->timestamps();
             // Optional: Define foreign key constraints if there's a users table
             // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
