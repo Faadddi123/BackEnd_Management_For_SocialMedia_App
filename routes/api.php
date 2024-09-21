@@ -30,9 +30,7 @@ Route::post('/tokens/create', function (Request $request) {
 
 
 //-------------------------------------------------------
-// Protected routes with Sanctum
 Route::middleware('auth:sanctum')->group(function () {
-    // Fetch user details
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
@@ -40,18 +38,23 @@ Route::middleware('auth:sanctum')->group(function () {
     // Send a message
     Route::post('/sendmessage', [messagecontroller::class, 'sendMessage']);
 
- 
+
     Route::post('/loadingmessages', [messagecontroller::class, 'loadMessages']);
 
 
     Route::get('/tokenvalidate', function () {
         return response()->json(['message' => 'Token is valid'], 200);
     });
+    Route::get('/gettheauthprofilpic',[usercontroller::class,'gettheauthprofilpic']);
+    Route::get('/getUserProfilePic/{id}',[usercontroller::class,'getUserProfilePic']);
+    Route::get('/getUserProfilePicUsingName/{user_name}',[usercontroller::class,'getUserProfilePicUsingName']);
     Route::get('/users', [UserController::class,'getAllUsersExceptAuthenticated']);
     Route::get('/getusername/{id}', [UserController::class, 'getUserName']);
     Route::get('/getuserinfo/{id}', [UserController::class, 'getUserInfo']);
     Route::post('/importapost' , [postmanagement::class , 'store']);
     Route::get('/posts/display', [displaycontroller::class , 'displayPosts']);
+    Route::get('/posts/displayVidPosts', [displaycontroller::class , 'displayVidPosts']);
+    Route::get('/posts/displayProfile/{user_name}', [displaycontroller::class , 'displayProfile']);
     Route::post('/message/delete/{id}', [messagecontroller::class, 'deleteMessage']);
     Route::post('/message/update/{id}', [messagecontroller::class, 'updateMessage']);
     Route::get('/posts/{id}', [PostManagement::class, 'show']);
@@ -71,5 +74,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/media/videoback/{mediaId}', [MediaController::class, 'getbackvideos']);
 });
 
-// Assuming you might also want a logout route
 Route::middleware('auth:sanctum')->post('/logout', [authentification::class, 'logout']);

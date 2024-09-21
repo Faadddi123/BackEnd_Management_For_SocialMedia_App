@@ -61,4 +61,40 @@ class usercontroller extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
     }
+
+    public function gettheauthprofilpic(){
+        $user = Auth::user();
+
+        if ($user && $user->profile_pic && file_exists(public_path($user->profile_pic))) {
+            return response()->file(public_path($user->profile_pic));
+        } else {
+
+            return response()->file(public_path('profile_pics/default_pic.jpg'));
+        }
+    }
+
+
+    public function getUserProfilePic($id){
+        $user = User::find($id);
+
+        if ($user && $user->profile_pic && file_exists(public_path($user->profile_pic))) {
+            return response()->file(public_path($user->profile_pic));
+        } else {
+            
+            return response()->file(public_path('profile_pics/default_pic.jpg'));
+        }
+    }
+
+
+    public function getUserProfilePicUsingName($name){
+        $user = User::where('name', $name)->first();
+
+        if ($user && $user->profile_pic && file_exists(public_path($user->profile_pic))) {
+            return response()->file(public_path($user->profile_pic));
+        } else {
+            return response()->file(public_path('profile_pics/default_pic.jpg'));
+        }
+    }
+
+
 }

@@ -20,11 +20,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'age', // New field
-        'phone_number', // New field
-        'profile_pic', // New field
+        'age',
+        'phone_number',
+        'profile_pic',
     ];
-    
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -44,7 +44,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            // 'password' => 'hashed', // Note: Laravel does not have a 'hashed' cast type by default.
+            // 'password' => 'hashed', 
         ];
     }
 }

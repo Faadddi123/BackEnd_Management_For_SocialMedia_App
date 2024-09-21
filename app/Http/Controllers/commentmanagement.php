@@ -17,7 +17,7 @@ class commentmanagement extends Controller
         ]);
 
         $comment = new Comment($validatedData);
-        $comment->user_id = Auth::id();; 
+        $comment->user_id = Auth::id();;
         $comment->save();
 
         return response()->json(['message' => 'Comment created successfully', 'data' => $comment], 201);
@@ -56,7 +56,7 @@ class commentmanagement extends Controller
 
     public function getCommentsByDisplayedId($displayed_id)
     {
-        $comments = Comment::with('user') // 'user' should be the name of the relationship method defined in the Comment model
+        $comments = Comment::with('user') 
                         ->where('displayed_id', $displayed_id)
                         ->orderBy('created_at', 'desc')
                         ->take(10)

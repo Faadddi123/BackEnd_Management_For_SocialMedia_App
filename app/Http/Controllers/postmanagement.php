@@ -23,27 +23,27 @@ class PostManagement extends Controller
         //     'post' => $request
         // ], 201);
         if($request->file('media')){
-        $file = $request->file('media');
-        $fileExtension = $file->getClientOriginalExtension();
-        $fileName = $file->hashName();
+            $file = $request->file('media');
+            $fileExtension = $file->getClientOriginalExtension();
+            $fileName = $file->hashName();
 
 
 
-        if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])) {
-            $path = $file->storeAs('images', $fileName, 'public');
-            $elementType = 1; // Type 1 for images
-        } elseif ($fileExtension === 'mp4') {
-            $path = $file->storeAs('videos', $fileName, 'public');
-            $elementType = 2; // Type 2 for videos
-        } else {
-            return response()->json(['error' => 'Unsupported file type'], 415);
-        }
+            if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])) {
+                $path = $file->storeAs('images', $fileName, 'public');
+                $elementType = 1;
+            } elseif ($fileExtension === 'mp4') {
+                $path = $file->storeAs('videos', $fileName, 'public');
+                $elementType = 2;
+            } else {
+                return response()->json(['error' => 'Unsupported file type'], 415);
+            }
         }else{
             $fileName = 'nothing';
             $elementType = 'nothing';
         }
 
-        // Default values for missing fields
+
         $data = [
         'content_text' => $request->input('content_text', 'nothing'),
         'element_type' => $elementType,
@@ -51,7 +51,7 @@ class PostManagement extends Controller
         'user_id' => Auth::id(),
         ];
 
-        // Check if all fields are 'nothing', which is not allowed
+
         if ($data['content_text'] === 'nothing' && $data['element_type'] === 'nothing' && $data['element_path'] === 'nothing') {
             return response()->json(['error' => 'At least one field must be provided'], 422);
         }
@@ -60,24 +60,24 @@ class PostManagement extends Controller
         // dd($data['content_text']);
         $post = Post::create($data);
         if ($post) {
-            // Create a new Displayed record
+
             $displayed = new Displayed([
-                'post_id' => $post->id, // Use the ID of the newly created post
-                'user_id' => Auth::id(), // Optionally, you can also store the user ID
+                'post_id' => $post->id,
+                'user_id' => Auth::id(),
                 'partage_id' => 0,
             ]);
 
-            // Save the Displayed record to the database
+
             $displayed->save();
 
-            // Return success response including the Displayed info
+
             return response()->json([
                 'message' => 'Post and display record created successfully',
                 'post' => $post,
                 'displayed' => $displayed
             ], 201);
         } else {
-            // Handle the case where the post wasn't created successfully
+
             return response()->json(['error' => 'Failed to create the post'], 500);
         }
     }
@@ -128,15 +128,15 @@ class PostManagement extends Controller
 
     public function getpostinfo($id)
     {
-        // Find the post by ID
+
         $post = Post::find($id);
 
-        // Check if the post exists
+
         if (!$post) {
             return response()->json(['error' => 'Post not found'], 404);
         }
 
-        // Return the post information along with user details
+
         return response()->json([
             'post' => [
                 'id' => $post->id,
@@ -144,10 +144,10 @@ class PostManagement extends Controller
                 'element_type' => $post->element_type,
                 'element_path' => $post->element_path,
                 'updated_at' => $post->updated_at,
-                'user_name' => $post->user->name, // Assuming there's a username field in the user model
-                'email' => $post->user->email // Assuming there's an email field in the user model
+                'user_name' => $post->user->name,
+                'email' => $post->user->email
 
             ]
         ], 200);
     }
-}
+} 

@@ -10,7 +10,7 @@ class MediaController extends Controller
 {
     public function upload(Request $request)
     {
-        $request->validate(['media' => 'required|file|image|max:10240']); // 10 MB maqsdx and must be an image
+        $request->validate(['media' => 'required|file|image|max:10240']);
         $file = $request->file('media');
         $fileName = $file->hashName();
         $path = $file->storeAs('media', $fileName, 'public');
@@ -33,7 +33,7 @@ class MediaController extends Controller
         $path = storage_path('app/public/media/' . $fileName);
 
         if (File::exists($path)) {
-            return response()->file($path); // This will automatically set appropriate headers
+            return response()->file($path);
         } else {
             return response()->json(['success' => false, 'message' => 'File does not exist.'], 404);
         }
@@ -43,7 +43,7 @@ class MediaController extends Controller
         $path = storage_path('app/public/images/' . $fileName);
 
         if (File::exists($path)) {
-            return response()->file($path); // This will automatically set appropriate headers
+            return response()->file($path);
         } else {
             return response()->json(['success' => false, 'message' => 'File does not exist.'], 404);
         }
@@ -53,7 +53,7 @@ class MediaController extends Controller
         $path = storage_path('app/public/videos/' . $fileName);
 
         if (File::exists($path)) {
-            return response()->file($path); // This will automatically set appropriate headers
+            return response()->file($path); 
         } else {
             return response()->json(['success' => false, 'message' => 'File does not exist.'], 404);
         }

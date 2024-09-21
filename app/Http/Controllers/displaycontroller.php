@@ -65,4 +65,52 @@ class displaycontroller extends Controller
 
         return response()->json(['message' => 'Deleted successfully']);
     }
+
+
+    public function displayVidPosts()
+    {
+        $posts = Post::join('displayed', 'posts.id', '=', 'displayed.post_id')
+            ->join('users as sharer', 'sharer.id', '=', 'displayed.user_id')
+            ->join('users as original_poster', 'original_poster.id', '=', 'posts.user_id')
+            ->join('post_partaged', 'post_partaged.id', '=', 'displayed.partage_id')
+            ->where('posts.element_type', 2)
+            ->select(
+                'posts.*',
+                'sharer.name as user_name', 'sharer.email as email',
+                'original_poster.name as original_user_name', 'original_poster.email as original_user_email',
+                'displayed.partage_id','displayed.id as displayed_id',
+                'post_partaged.text',
+                'post_partaged.updated_at as partaged_updated_at'
+            )
+            ->latest('displayed.created_at')
+            ->take(10)
+            ->get();
+
+        return response()->json($posts);
+    }
+
+
+    public function displayProfile($user_name)
+{
+    $posts = Post::join('displayed', 'posts.id', '=', 'displayed.post_id')
+        ->join('users as sharer', 'sharer.id', '=', 'displayed.user_id')
+        ->join('users as original_poster', 'original_poster.id', '=', 'posts.user_id')
+        ->join('post_partaged', 'post_partaged.id', '=', 'displayed.partage_id')
+        ->where('sharer.name', '=', $user_name)
+        ->select(
+            'posts.*',
+            'sharer.name as user_name', 'sharer.email as email',
+            'original_poster.name as original_user_name', 'original_poster.email as original_user_email',
+            'displayed.partage_id','displayed.id as displayed_id',
+            'post_partaged.text',
+            'post_partaged.updated_at as partaged_updated_at'
+        )
+        ->latest('displayed.created_at')
+        ->take(10)
+        ->get();
+
+    return response()->json($posts);
+}
+
+
 }
